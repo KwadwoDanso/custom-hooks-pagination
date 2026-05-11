@@ -53,4 +53,40 @@ function usePagination(
         () => (clampedPage > 0 ? endIndex - startIndex + 1 : 0),
         [clampedPage, startIndex, endIndex]
     );
-    
+    // Navigation booleans
+    const canNextPage = clampedPage < totalPages;
+    const canPrevPage = clampedPage > 1;
+
+    // Navigation functions — useCallback keeps references stable for child components
+    const setPage = useCallback(
+        (page: number) => setCurrentPage(page),
+        []
+    );
+
+    const nextPage = useCallback(
+        () => setCurrentPage((prev) => prev + 1),
+        []
+    );
+
+    const prevPage = useCallback(
+        () => setCurrentPage((prev) => prev - 1),
+        []
+    );
+
+    // console.log("usePagination debug:", { clampedPage, totalPages, startIndex, endIndex, itemsOnCurrentPage });
+
+    return {
+        currentPage: clampedPage,
+        totalPages,
+        startIndex,
+        endIndex,
+        itemsOnCurrentPage,
+        setPage,
+        nextPage,
+        prevPage,
+        canNextPage,
+        canPrevPage,
+    };
+}
+
+export default usePagination;
