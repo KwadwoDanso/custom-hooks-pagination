@@ -1,11 +1,5 @@
 // DebounceSearchDemo.tsx — demonstrates useDebounce hook
-//
-// User can:
-//   - Type in a search input (value changes on every keystroke)
-//   - Adjust the debounce delay via a number input
-// Displays: the raw input value, the debounced value, and filtered results
-// The "API call" only fires when debouncedValue changes — simulated by
-// filtering a sample dataset
+
 
 import { useState, useMemo, useEffect } from "react";
 import type { ChangeEvent } from "react";
@@ -55,3 +49,73 @@ function DebounceSearchDemo() {
         const val = parseInt(e.target.value, 10);
         setDelay(isNaN(val) ? 0 : Math.max(0, val));
     };
+    // console.log("DebounceSearchDemo render:", { query, debouncedQuery, delay, searchCount });
+
+    return (
+        <section style={{ padding: "1.5rem", maxWidth: "700px" }}>
+            <h2 style={{ marginBottom: "1rem" }}>Debounce Search Demo</h2>
+
+            {/* Controls — search input and delay adjustment */}
+            <div style={{ display: "flex", gap: "1.5rem", marginBottom: "1.25rem", flexWrap: "wrap", alignItems: "flex-end" }}>
+                <label style={{ display: "flex", flexDirection: "column", gap: "0.25rem", fontSize: "0.85rem", flex: 1, minWidth: "200px" }}>
+                    Search
+                    <input
+                        type="search"
+                        value={query}
+                        onChange={handleQueryChange}
+                        placeholder="Type to search..."
+                        autoComplete="off"
+                        style={{ padding: "0.65rem 1rem", fontSize: "1rem", borderRadius: "8px", border: "1px solid #ccc" }}
+                    />
+                </label>
+                <label style={{ display: "flex", flexDirection: "column", gap: "0.25rem", fontSize: "0.85rem" }}>
+                    Delay (ms)
+                    <input
+                        type="number"
+                        value={delay}
+                        onChange={handleDelayChange}
+                        min={0}
+                        step={DELAY_STEP}
+                        style={{ padding: "0.65rem", width: "6rem", fontSize: "1rem", borderRadius: "8px", border: "1px solid #ccc" }}
+                    />
+                </label>
+            </div>
+
+            {/* Live comparison — raw vs debounced value */}
+            <div style={{ background: "#f1f5f9", padding: "0.85rem 1rem", borderRadius: "8px", fontSize: "0.85rem", marginBottom: "1rem", lineHeight: 1.8 }}>
+                <div>
+                    <strong>Raw value:</strong>{" "}
+                    <code style={{ background: "#e2e8f0", padding: "0.15rem 0.4rem", borderRadius: "4px" }}>
+                        {query || "(empty)"}
+                    </code>
+                </div>
+                <div>
+                    <strong>Debounced value:</strong>{" "}
+                    <code style={{ background: "#dbeafe", padding: "0.15rem 0.4rem", borderRadius: "4px" }}>
+                        {debouncedQuery || "(empty)"}
+                    </code>
+                </div>
+                <div>
+                    <strong>Simulated API calls:</strong> {searchCount}
+                    {" · "}<strong>Delay:</strong> {delay}ms
+                    {" · "}<strong>Results:</strong> {filteredResults.length}
+                </div>
+            </div>
+
+            {/* Filtered results */}
+            <ul style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: "0.5rem" }}>
+                {filteredResults.map((item) => (
+                    <li key={item} style={{ padding: "0.6rem 0.85rem", background: "#f8fafc", borderRadius: "6px", border: "1px solid #e2e8f0", fontSize: "0.85rem" }}>
+                        {item}
+                    </li>
+                ))}
+            </ul>
+
+            {filteredResults.length === 0 && (
+                <p style={{ color: "#94a3b8", fontStyle: "italic", marginTop: "0.5rem" }}>No matches found.</p>
+            )}
+        </section>
+    );
+}
+
+export default DebounceSearchDemo;
